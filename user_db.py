@@ -119,6 +119,13 @@ class UserDB:
         """
         self.__cursor.execute(f'DELETE FROM {self.__table} WHERE id = {id}')
         self.__conn.commit()
+    
+    def clear_table(self):
+        """
+        Deletes all data from table.
+        """
+        self.__cursor.execute('DELETE FROM users')
+        self.__conn.commit()
         
     def __del__(self):
         #print(f'Closing connection to {self.__table}.')
