@@ -1,11 +1,17 @@
 import sqlite3
 
 class UserDB:
-    """
-    Handles user database tables.\n
-    Tables have columns id, email and name.
-    """
     def __init__(self, db_name, table_name):
+        """
+        Handles user database tables. Tables have columns id, email and name.
+        
+        Parameters
+        ----------
+        db_name : string
+            Name of database file.
+        table_name : string
+            Name of table in database.
+        """
         self.__table = table_name
         self.__conn = sqlite3.connect(db_name)
         self.__cursor = self.__conn.cursor()
@@ -20,18 +26,43 @@ class UserDB:
         #print(f'Created {table_name} in {db_name}.')
     
     def get_users(self):
+        """
+        Returns a list with all information off all curently saved users.
+        
+        Returns
+        -------
+        list ( Tuple ( id, email, name ) )
+        """
         self.__cursor.execute('SELECT * FROM users')
         result = self.__cursor.fetchall()
         
         return result
     
+    def print_all_users(self):
+        """
+        Prints id, email and name off all curently saved users.
+        """
+        users = self.get_users()
+        print('\nCurrent users in database')
+        
+        for user in users:
+            print(f'ID: {user[0]}, email: {user[1]}, name: {user[2]}.')
+    
     def find_by_column_name(self, column_name, serch_term, exakt=False):
         """
+        Serch any column for a value. Case insensitive.
+        
+        Parameters
+        ----------
         column_name : string
+            Wich colomn you whant to search.
         serch_term : string
+            What you whant to find.
         exakt : bool, standard value False.
             If True does exact string comparison.
-        Serch any column for a value. Case insensitive.
+        Returns
+        -------
+        list ( Tuple ( id, email, name ) )
         """
         result = []
         select_statment = f'SELECT * FROM {self.__table} WHERE '
@@ -49,6 +80,14 @@ class UserDB:
         return result
     
     def add_user(self, costumer_info):
+        """
+        Insert a new user into the database.
+        
+        Parameters
+        ----------
+        costumer_info : tuple ( string, string )
+            Tuple whith two strings. First is email and second is name.
+        """
         insert_statment = f'INSERT INTO {self.__table}(email, name) '
         insert_statment += 'VALUES(?,?)'
         
@@ -56,6 +95,14 @@ class UserDB:
         self.__conn.commit()
     
     def del_user(self, id):
+        """
+        removes a user from database.
+        
+        Parameters
+        ----------
+        id : integer
+            The id off the user that should be removed
+        """
         self.__cursor.execute(f'DELETE FROM {self.__table} WHERE id = {id}')
         self.__conn.commit()
         

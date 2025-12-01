@@ -5,14 +5,13 @@ if __name__ == '__main__':
     test_db.add_user(('amanda.amandasdotter@test.com', 'Amanda Amandasdotter'))
     test_db.add_user(('bengt.bengtsson@test.com', 'Bengt Begntsson'))
     
-    all_users = test_db.get_users()
-    print(all_users)
+    test_db.print_all_users()
     
-    user_amanda = test_db.find_by_column_name('name', 'amanda a')
+    user_amanda = test_db.find_by_column_name('name', 'nda a')
     print(user_amanda)
     
     test_db.del_user(user_amanda[0][0])
     all_users = test_db.get_users()
     print(all_users)
     
-    test_db.find_by_column_name('ssn', '')
+    test_db.find_by_column_name('ssn', '202501012385')
