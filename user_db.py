@@ -48,6 +48,20 @@ class UserDB:
         for user in users:
             print(f'ID: {user[0]}, email: {user[1]}, name: {user[2]}.')
     
+    def users_in_db(self):
+        """
+        Returns how many users are curently saved in database.
+        
+        Returns
+        -------
+        integer
+            The number of curently saved users.
+        """
+        self.__cursor.execute('SELECT COUNT(*) FROM users')
+        result = self.__cursor.fetchone()[0]
+        
+        return result
+    
     def find_by_column_name(self, column_name, serch_term, exakt=False):
         """
         Serch any column for a value. Case insensitive.
