@@ -46,7 +46,7 @@ class UserDB:
         print('\nCurrent users in database')
         
         for user in users:
-            print(f'ID: {user[0]}, email: {user[1]}, name: {user[2]}.')
+            print(f'- ID: {user[0]}, email: {user[1]}, name: {user[2]}.')
     
     def users_in_db(self):
         """
@@ -88,24 +88,28 @@ class UserDB:
         try:
             self.__cursor.execute(select_statment)
             result = self.__cursor.fetchall()
-        except sqlite3.OperationalError:
-            print(f'Column "{column_name}" not in table {self.__table}')
+        except sqlite3.OperationalError as e:
+            if str(e) == f'no such column: {column_name}':
+                print(f'Column "{column_name}" not in table {self.__table}')
+            else:
+                print(f'An error occurred: {e}')
         
         return result
     
-    def add_user(self, costumer_info):
+    def add_users(self, custumer_info):
         """
-        Insert a new user into the database.
+        Insert new users into the database.
         
         Parameters
         ----------
-        costumer_info : tuple ( string, string )
-            Tuple whith two strings. First is email and second is name.
+        custumer_info : Iterable ( tuple ( string, string ) )
+            An iterable off tuples whith two strings. 
+            First string is email and second is name.
         """
         insert_statment = f'INSERT INTO {self.__table}(email, name) '
         insert_statment += 'VALUES(?,?)'
         
-        self.__cursor.execute(insert_statment, costumer_info)
+        self.__cursor.executemany(insert_statment, custumer_info)
         self.__conn.commit()
     
     def del_user(self, id):
