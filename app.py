@@ -31,11 +31,18 @@ def do_db_tests(db):
     db : UserDB instance
         The database to add the users to
     """
+    print('\nCurrent users in database')
     db.print_all_users()
     
     user = db.find_by_column_name('name', 'nda ama')
+    print('\nFound user Amanda Amandasdotter:')
     print(user)
     
+    db.del_user(user[0][0])
+    print('\nUsers in database after deleting Amanda Amandasdotter:')
+    db.print_all_users()
+    
+    print("\nTrying too search column ssn that don't exist:")
     db.find_by_column_name('ssn', '202501012385')
 
 
@@ -44,9 +51,10 @@ def main():
     Connects to database, creates test users, tests database 
     and emptys database.
     """
+    print('\nCreating testusers...')
     test_db = UserDB('data/test_users.db', 'users')
     users_in_db = test_db.users_in_db()
-    random_users = 0
+    random_users = 2
     specifik_test_users = [('amanda.amandasdotter@example.se',
                             'Amanda Amandasdotter'),
                             ('bbengtsson@example.com', 'Bengt Bengtsson')]
@@ -62,10 +70,13 @@ def main():
         test_db.clear_table()
     
     test_db.add_users(specifik_test_users)
-    print('Testusers created.')
+    print('Testusers created')
     
     do_db_tests(test_db)
+    
+    print('\nClearing table...')
     test_db.clear_table()
+    print('Table cleared off all users\n')
 
 
 if __name__ == '__main__':

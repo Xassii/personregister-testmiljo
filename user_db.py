@@ -12,16 +12,28 @@ class UserDB:
         table_name : string
             Name of table in database.
         """
+        db_name = db_name.strip()
+        table_name = table_name.strip()
+        
+        if not db_name[-3:] == '.db':
+            raise ValueError("db_name don't end in .db")
+        
+        if len(db_name) < 4:
+            raise ValueError('Variable db_name is too short/empty')
+        
+        if len(table_name) < 1:
+            raise ValueError('Variabe table_name is empty')
+        
         self.__table = table_name
         self.__conn = sqlite3.connect(db_name)
         self.__cursor = self.__conn.cursor()
         
-        create_statement = f'CREATE TABLE IF NOT EXISTS {table_name}'
+        create_statement = f'CREATE TABLE IF NOT EXISTS {self.__table}'
         self.__cursor.execute(create_statement + """ (
-                              id INTEGER PRIMARY KEY AUTOINCREMENT,
-                              email STRING NOT NULL,
-                              name STRING NOT NULL
-                              )""")
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            email STRING NOT NULL,
+                            name STRING NOT NULL
+                            )""")
         self.__conn.commit()
         #print(f'Created {table_name} in {db_name}.')
     
@@ -43,10 +55,9 @@ class UserDB:
         Prints id, email and name off all curently saved users.
         """
         users = self.get_users()
-        print('\nCurrent users in database')
         
         for user in users:
-            print(f'- ID: {user[0]}, email: {user[1]}, name: {user[2]}.')
+            print(f'- ID: {user[0]}, email: {user[1]}, name: {user[2]}')
     
     def users_in_db(self):
         """
@@ -92,7 +103,9 @@ class UserDB:
             if str(e) == f'no such column: {column_name}':
                 print(f'Column "{column_name}" not in table {self.__table}')
             else:
-                print(f'An error occurred: {e}')
+                text = 'An error occurred when trying to find value in '
+                text += f'database: {e}'
+                print(text)
         
         return result
     
@@ -121,8 +134,11 @@ class UserDB:
         id : integer
             The id off the user that should be removed
         """
-        self.__cursor.execute(f'DELETE FROM {self.__table} WHERE id = {id}')
-        self.__conn.commit()
+        try:
+            self.__cursor.execute(f'DELETE FROM {self.__table} WHERE id = {id}')
+            self.__conn.commit()
+        except sqlite3.OperationalError as e:
+            print(f'An error occured when trying to delete user {id}: {e}')
     
     def clear_table(self):
         """
@@ -130,7 +146,7 @@ class UserDB:
         """
         self.__cursor.execute('DELETE FROM users')
         self.__conn.commit()
-        
+    
     def __del__(self):
         #print(f'Closing connection to {self.__table}.')
         self.__conn.close()
