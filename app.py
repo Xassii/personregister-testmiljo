@@ -1,54 +1,5 @@
-import random
 from user_db import UserDB
-from faker import Faker
-
-def match_email(f_name, l_name):
-    """
-    Creates diffrent test email adresses using first and last name
-    
-    Parameters
-    ----------
-    f_name : string
-    l_name : string
-    Returns
-    -------
-    string
-    """
-    f_name = f_name.lower()
-    l_name = l_name.lower()
-    local_type = random.randint(1, 7)
-    domain_type = random.randint(1, 11)
-    adress = '@example.'
-    
-    if local_type == 1:
-        adress = f_name + str(random.randint(1, 9999)) + adress
-    elif local_type == 2:
-        adress = l_name + str(random.randint(1, 9999)) + adress
-    elif local_type == 3:
-        adress = f_name + l_name + adress
-    elif local_type == 4:
-        adress = l_name + f_name + adress
-    elif local_type == 5:
-        adress = f_name + '.' + l_name + adress
-    elif local_type == 6:
-        adress = l_name + '.' + f_name + adress
-    else:
-        adress = f_name[0] + l_name + adress
-    
-    if domain_type == 1:
-        adress += 'org'
-    elif domain_type == 2:
-        adress += 'net'
-    elif domain_type == 3:
-        adress += 'subdomain.com'
-    elif domain_type <= 5:
-        adress += 'nu'
-    elif domain_type <= 8:
-        adress += 'com'
-    else:
-        adress += 'se'
-    
-    return adress
+from better_faker_sve import BetterFakerSve
 
 
 def create_test_users(db, num_users):
@@ -62,17 +13,11 @@ def create_test_users(db, num_users):
     num_users : integer
         Number off users to create
     """
-    f = Faker()
+    fake = BetterFakerSve()
     users = []
     
     for _ in range(num_users):
-        f_name = f.first_name()
-        l_name = f.last_name()
-        if random.randint(0, 9):
-            email = match_email(f_name, l_name)
-        else:
-            email = f.email()
-        users.append((email, f_name + ' ' + l_name))
+        users.append(fake.create_GDPR_safe_person())
     
     db.add_users(users)
 
