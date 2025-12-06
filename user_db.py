@@ -45,7 +45,7 @@ class UserDB:
         -------
         list ( Tuple ( id, email, name ) )
         """
-        self.__cursor.execute('SELECT * FROM users')
+        self.__cursor.execute(f'SELECT * FROM {self.__table}')
         result = self.__cursor.fetchall()
         
         return result
@@ -68,7 +68,7 @@ class UserDB:
         integer
             The number of curently saved users.
         """
-        self.__cursor.execute('SELECT COUNT(*) FROM users')
+        self.__cursor.execute(f'SELECT COUNT(*) FROM {self.__table}')
         result = self.__cursor.fetchone()[0]
         
         return result
@@ -119,6 +119,13 @@ class UserDB:
             An iterable off tuples whith two strings. 
             First string is email and second is name.
         """
+        if not custumer_info:
+            return None
+        
+        for customer in custumer_info:
+            if not customer[0] or not customer[1]:
+                raise ValueError("Can't add empty values to user database.")
+        
         insert_statment = f'INSERT INTO {self.__table}(email, name) '
         insert_statment += 'VALUES(?,?)'
         
@@ -134,6 +141,10 @@ class UserDB:
         id : integer
             The id off the user that should be removed
         """
+        if not id or int(id) <= 0:
+            text = 'Id to delete user from table must be a positive integer.'
+            raise ValueError(text)
+        
         try:
             self.__cursor.execute(f'DELETE FROM {self.__table} WHERE id = {id}')
             self.__conn.commit()
@@ -144,7 +155,7 @@ class UserDB:
         """
         Deletes all data from table.
         """
-        self.__cursor.execute('DELETE FROM users')
+        self.__cursor.execute(f'DELETE FROM {self.__table}')
         self.__conn.commit()
     
     def __del__(self):

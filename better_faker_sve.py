@@ -44,7 +44,7 @@ class BetterFakerSve:
         # Replaces characters in name that are not spase, dot or letters
         for i in range(len(name)):
             if not re.search('[a-z. ]', name[i]):
-                name[i] = 'x'
+                name.replace(name[i], 'x')
         
         names = name.split()
         
@@ -64,26 +64,26 @@ class BetterFakerSve:
         -------
         string
         """
-        name = self.__prepare_name_for_email(name)
-        if len(name) > 1:
+        names = self.__prepare_name_for_email(name)
+        if len(names) > 1:
             local_type = random.randint(1, 7)
         else:
-            local_type = random.randint(1, 2)
+            return names[0] + str(random.randint(1, 9999))
         
         if local_type == 1:
-            local_part = name[0] + str(random.randint(1, 9999))
+            local_part = names[0] + str(random.randint(1, 9999))
         elif local_type == 2:
-            local_part = name[-1] + str(random.randint(1, 9999))
+            local_part = names[-1] + str(random.randint(1, 9999))
         elif local_type == 3:
-            local_part = name[0] + name[-1]
+            local_part = names[0] + names[-1]
         elif local_type == 4:
-            local_part = name[-1] + name[0]
+            local_part = names[-1] + names[0]
         elif local_type == 5:
-            local_part = name[0] + '.' + name[-1]
+            local_part = names[0] + '.' + names[-1]
         elif local_type == 6:
-            local_part = name[-1] + '.' + name[0]
+            local_part = names[-1] + '.' + names[0]
         else:
-            local_part = name[0][0] + name[-1]
+            local_part = names[0][0] + names[-1]
         
         return local_part
     
@@ -102,7 +102,7 @@ class BetterFakerSve:
         string
         """
         name = name.strip()
-        if not len(name):
+        if not name:
             return self.fake.email()
         
         local_part = self.__create_local_part(name)
@@ -124,7 +124,7 @@ class BetterFakerSve:
         
         return adress
     
-    def create_GDPR_safe_person(self):
+    def create_gdpr_safe_person(self):
         """
         Creates fake random people fore use in testing.
         

@@ -4,12 +4,13 @@ from better_faker_sve import BetterFakerSve
 
 def create_test_users(db, num_users):
     """
-    Creates random testusers with name and email and adds them to the database
+    Creates random testusers with name and email and adds them to the
+    database table
     
     Parameters
     ----------
     db : UserDB instance
-        The database to add the users to
+        The database table to add the users to
     num_users : integer
         Number off users to create
     """
@@ -17,7 +18,7 @@ def create_test_users(db, num_users):
     users = []
     
     for _ in range(num_users):
-        users.append(fake.create_GDPR_safe_person())
+        users.append(fake.create_gdpr_safe_person())
     
     db.add_users(users)
 
@@ -29,7 +30,7 @@ def do_db_tests(db):
     Parameters
     ----------
     db : UserDB instance
-        The database to add the users to
+        The database table to do the tests on
     """
     print('\nCurrent users in database')
     db.print_all_users()
@@ -38,7 +39,7 @@ def do_db_tests(db):
     print('\nFound user Amanda Amandasdotter:')
     print(user)
     
-    db.del_user(user[0][0])
+    db.del_user(int(user[0][0]))
     print('\nUsers in database after deleting Amanda Amandasdotter:')
     db.print_all_users()
     
@@ -48,8 +49,8 @@ def do_db_tests(db):
 
 def main():
     """
-    Connects to database, creates test users, tests database 
-    and emptys database.
+    Connects to database, creates test users, tests database table
+    and emptys database table.
     """
     print('\nCreating testusers...')
     test_db = UserDB('data/test_users.db', 'users')
@@ -64,7 +65,7 @@ def main():
     elif random_users and users_in_db:
         print('Database had data. Clearing and creating test users.')
         test_db.clear_table()
-        create_test_users(test_db)
+        create_test_users(test_db, random_users)
     elif users_in_db:
         print('Database had data. Clearing and creating test users.')
         test_db.clear_table()
