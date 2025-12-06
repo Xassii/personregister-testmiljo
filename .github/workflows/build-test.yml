@@ -16,6 +16,10 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+            
+            - name: Create dir
+              run: |
+                mkdir data
               
             - name: test #TODO
               uses: actions/setup-python@v6
