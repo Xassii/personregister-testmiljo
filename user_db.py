@@ -74,7 +74,8 @@ class UserDB:
         
         return result
     
-    def find_by_column_name(self, column_name, serch_term, exakt=False):
+    def find_by_column_name(self, column_name, serch_term,
+                            exakt=False, invert=False):
         """
         Serch any column for a value. Case insensitive.
         
@@ -86,16 +87,23 @@ class UserDB:
             What you whant to find.
         exakt : bool, standard value False.
             If True does exact string comparison.
+        invert : bool, standard value False.
+            If True returns values that don't match the search term.
         Returns
         -------
         list ( Tuple ( id, email, name ) )
         """
         result = []
         select_statment = f'SELECT * FROM {self.__table} WHERE '
+        select_statment += f'{column_name} '
+        
+        if invert:
+            select_statment += 'NOT '
+        
         if exakt:
-            select_statment += f'{column_name} LIKE "{serch_term}"'
+            select_statment += f'LIKE "{serch_term}"'
         else:
-            select_statment += f'{column_name} LIKE "%{serch_term}%"'
+            select_statment += f'LIKE "%{serch_term}%"'
         
         try:
             self.__cursor.execute(select_statment)
