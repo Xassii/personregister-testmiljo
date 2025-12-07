@@ -54,13 +54,9 @@ def create_fake_db(user_db, user_table, num_users):
     """#TODO Uppdate dockstring
     db = UserDB(user_db, user_table)
     users_in_db = db.users_in_db()
-    wrong_email = db.count_in_collumn('email', '@example.', invert=True)
-    no_email = db.count_in_collumn('email', 'None')
-    no_name = db.count_in_collumn('name', 'None')
+    wrong_email = db.find_by_column_name('email', '@example.', invert=True)
     
-    validate = users_in_db == num_users and not wrong_email
-    validate = validate and not no_email and not no_name
-    if validate:
+    if users_in_db == num_users and not wrong_email:
         print('Database allredy have users.')
         return None
     
