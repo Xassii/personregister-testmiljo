@@ -16,6 +16,19 @@ class TestUserDB:
         
         db.clear_table()
     
+    def test_initialising_db_wrong_filename(self):
+        with pytest.raises(ValueError):
+            UserDB('', 'unittests')
+            UserDB('        ', 'unittests')
+            UserDB('.db', 'unittests')
+            UserDB('        .db', 'unittests')
+            UserDB('data/test_usersdb', 'unittests')
+            UserDB('data/test_users_db', 'unittests')
+    
+    def test_initialising_db_no_tablename(self):
+        with pytest.raises(ValueError):
+            UserDB('data/test_users.db', '')
+    
     def test_get_users(self, create_database):
         users = create_database.get_users()
         

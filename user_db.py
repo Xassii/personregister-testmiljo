@@ -14,6 +14,7 @@ class UserDB:
         """
         db_name = db_name.strip()
         table_name = table_name.strip()
+        self.__conn = None
         
         if not db_name[-3:] == '.db':
             raise ValueError("db_name don't end in .db")
@@ -160,4 +161,5 @@ class UserDB:
     
     def __del__(self):
         #print(f'Closing connection to {self.__table}.')
-        self.__conn.close()
+        if self.__conn:
+            self.__conn.close()
