@@ -3,7 +3,20 @@ from user_db import UserDB
 from better_faker_sve import BetterFakerSve
 
 
-def gdpr_validate_test_user_db(user_db, user_table, num_users):#TODO
+def gdpr_validate_test_user_db(user_db, user_table, num_users):
+    """
+    Validates that the correct number of users are in the database
+    and that the emails have '@example.' in them.
+    
+    Parameters
+    ----------
+    user_db: string
+        Name of database file with user_table in
+    user_table: string
+        Name of table to validate
+    num_users: intiger
+        Nummber of users that should be in database
+    """
     db = UserDB(user_db, user_table)
     
     current_users = db.users_in_db()
@@ -16,32 +29,59 @@ def gdpr_validate_test_user_db(user_db, user_table, num_users):#TODO
     assert wrong_email == 0, text
 
 
-def create_annon_db(user_db, user_table, annon_db, annon_table):#TODO
-    #TODO ask teacher
+def create_anon_db(user_db, user_table, anon_db, anon_table):
+    """
+    Anonymises users from user_table and saves the anonymised
+    users in anon_table.
+    
+    Parameters
+    ----------
+    user_db: string
+        Name of database file with user_table in
+    user_table: string
+        Name of table with users to anonymize
+    anon_db: string
+        Name of database file to save new anonymized users in
+    anon_table: string
+        Name of table to save new anonymized users in
+    """
     user_db = UserDB(user_db, user_table)
-    annon_db = UserDB(annon_db, annon_table)
+    anon_db = UserDB(anon_db, anon_table)
     
-    num_org_users = user_db.users_in_db()
-    annon_users = []
+    org_users = user_db.get_users()
+    anon_users = []
     
-    for i in range(num_org_users):
-        annon_email = f'anonym.anvandare{i}@example.com'
-        annon_users.append((annon_email, f'Anonym Användare{i}'))
+    for i, user in enumerate(org_users):
+        anon_email = f'anonym.anvandare{i}@example.com'
+        anon_name = f'Anonym Användare{i}'
+        other_info = user[2:]
+        anon_users.append((anon_email, anon_name, *other_info))
     
-    annon_db.add_users(annon_users)
+    anon_db.add_users(anon_users)
 
 
 def determen_and_print_message(users_in_db, num_users):
+    """
+    Prints diffrent messages depending on how users_in_db
+    and num_users compare.
+    
+    Parameters
+    ----------
+    users_in_db: intiger
+        Users currently in database
+    num_users: intiger
+        Nummber of users that should be in database
+    """
     if users_in_db > num_users:
-        text = 'Too many users in database. '
+        text = '\nToo many users in database. '
         text += 'Clearing and creating new testusers...'
     elif users_in_db > 0 and users_in_db < num_users:
-        text = 'Too few users in database. '
+        text = '\nToo few users in database. '
         text += 'Clearing and creating new testusers...'
     elif users_in_db == 0:
-        text = 'Creating testusers...'
+        text = '\nCreating testusers...'
     else:
-        text = 'Testdatabase have an incorrect value. '
+        text = '\nTestdatabase have an incorrect value. '
         text += 'Clearing and creating new testusers...'
     
     print(text)
@@ -50,14 +90,24 @@ def determen_and_print_message(users_in_db, num_users):
 def create_fake_db(user_db, user_table, num_users):
     """
     Connects to database, checks if there is the correct amount of users
-    in it and creates the test users if not.
-    """#TODO Uppdate dockstring
+    in it whith fake emails. If not, clears the database and creates new
+    test users.
+    
+    Parameters
+    ----------
+    user_db : string
+        Name of database file.
+    user_table : string
+        Name of table in database.
+    num_users : intiger
+        How many users that should be in the database
+    """
     db = UserDB(user_db, user_table)
     users_in_db = db.users_in_db()
     wrong_email = db.find_by_column_name('email', '@example.', invert=True)
     
     if users_in_db == num_users and not wrong_email:
-        print('Database allredy have users.')
+        print('\nDatabase allredy have users.')
         return None
     
     determen_and_print_message(users_in_db, num_users)
@@ -73,19 +123,25 @@ def create_fake_db(user_db, user_table, num_users):
 
 
 def main():
+    """
+    Creates in database test_users fake users in table users and
+    anonymived users in table anonusers.\nAfter checks that data in
+    table users don't get changed every ten seconds. If data has been
+    changed the user table is recreated.
+    """
     create_fake_db('data/test_users.db', 'users', 100)
-    create_annon_db('data/test_users.db', 'users',
-                    'data/test_users.db', 'annonusers')
+    create_anon_db('data/test_users.db', 'users',
+                    'data/test_users.db', 'anonusers')
     
     # Keep the container running for testing
-    print("\nContainer is running. Press Ctrl+C to exit.")
     try:
         while True:
             gdpr_validate_test_user_db('data/test_users.db', 'users', 100)
             print('Database validated.')
             time.sleep(10)
-    except KeyboardInterrupt:
-        print("\nShutting down...")
+    except AssertionError:
+        print("\nDatabase validation failed!")
+        create_fake_db('data/test_users.db', 'users', 100)
 
 
 if __name__ == '__main__':

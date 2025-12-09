@@ -1,0 +1,10 @@
+services:
+    journal-app:
+        build: .
+        container_name: journal-app
+        ports: ["5000:5000"]
+        volumes:
+            - db-data:/app/data
+
+volumes:
+    db-data:

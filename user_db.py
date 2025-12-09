@@ -16,17 +16,16 @@ class UserDB:
         table_name = table_name.strip()
         self.__conn = None
         
-        if not db_name[-3:] == '.db':
-            raise ValueError("db_name don't end in .db")
-        
         if len(db_name) < 4:
             raise ValueError('Variable db_name is too short/empty')
-        
         if len(table_name) < 1:
             raise ValueError('Variabe table_name is empty')
+        if not db_name[-3:] == '.db':
+            raise ValueError("Variable db_name don't end in .db")
         
+        self.__db_name = db_name
         self.__table = table_name
-        self.__conn = sqlite3.connect(db_name)
+        self.__conn = sqlite3.connect(self.__db_name)
         self.__cursor = self.__conn.cursor()
         
         create_statement = f'CREATE TABLE IF NOT EXISTS {self.__table}'
