@@ -54,7 +54,8 @@ def create_anon_db(user_db, user_table, anon_db, anon_table):
     for i, user in enumerate(org_users):
         anon_email = f'anonym.anvandare{i}@example.com'
         anon_name = f'Anonym Användare{i}'
-        other_info = user[2:]
+        other_info = user[3:]
+        
         anon_users.append((anon_email, anon_name, *other_info))
     
     anon_db.add_users(anon_users)
@@ -129,19 +130,23 @@ def main():
     table users don't get changed every ten seconds. If data has been
     changed the user table is recreated.
     """
-    create_fake_db('data/test_users.db', 'users', 100)
+    num_users = 50
+    create_fake_db('data/test_users.db', 'users', num_users)
     create_anon_db('data/test_users.db', 'users',
                     'data/test_users.db', 'anonusers')
     
     # Keep the container running for testing
-    try:
-        while True:
-            gdpr_validate_test_user_db('data/test_users.db', 'users', 100)
-            print('Database validated.')
-            time.sleep(10)
-    except AssertionError:
-        print("\nDatabase validation failed!")
-        create_fake_db('data/test_users.db', 'users', 100)
+    while True:
+        try:
+                time.sleep(60)
+                gdpr_validate_test_user_db('data/test_users.db', 'users', num_users)
+                print('Database validated.')
+        except AssertionError:
+            print("\nDatabase validation failed!")
+            create_fake_db('data/test_users.db', 'users', num_users)
+        except KeyboardInterrupt:
+            print("\nShutting down...")
+            return None
 
 
 if __name__ == '__main__':

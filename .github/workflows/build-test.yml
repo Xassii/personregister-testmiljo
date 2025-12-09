@@ -33,5 +33,3 @@ jobs:
             - name: Run tests
               run: |
                 python -m pytest tests/
-    
-    #TODO docker test
