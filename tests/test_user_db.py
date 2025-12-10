@@ -40,7 +40,7 @@ class TestUserDB:
     
     def test_users_in_db(self, create_database):
         len_users = len(create_database.get_users())
-        num_users = create_database.users_in_db()
+        num_users = create_database.db_len()
         
         assert num_users == self.num_users
         assert len_users == num_users
