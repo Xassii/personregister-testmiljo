@@ -63,10 +63,9 @@ De ligger i mappen tests och testar funktionaliteten i better_faker_sve.py och u
 För att automatiskt testa koden när den laddas upp till GitHub finns:
 - build-test.yml
 
-Den kör vid push, pull-request och den 8:e - 13:e december vid midnatt.
+Den kör vid push, pull-request och scemalagt den 8:e - 13:e december vid midnatt.
 
 ### Docker
 För att säkerställa att programmet kan köras oavsätt dator finns:
 - Dockerfile
 - docker-compose.yml
-
