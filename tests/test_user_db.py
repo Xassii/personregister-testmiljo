@@ -38,7 +38,7 @@ class TestUserDB:
         assert users[1][1] == self.users[1][0]
         assert users[1][2] == self.users[1][1]
     
-    def test_users_in_db(self, create_database):
+    def test_db_len(self, create_database):
         len_users = len(create_database.get_users())
         num_users = create_database.db_len()
         
@@ -84,12 +84,12 @@ class TestUserDB:
     
     def test_add_users(self, create_database):
         start_users = create_database.get_users()
-        start_num_users = create_database.users_in_db()
+        start_num_users = create_database.db_len()
         
         create_database.add_users([('carro23@example.net',
                                     'Carro Carrosdotter')])
         users = create_database.get_users()
-        num_users = create_database.users_in_db()
+        num_users = create_database.db_len()
         
         assert num_users == start_num_users + 1
         assert len(users) == num_users
@@ -100,11 +100,11 @@ class TestUserDB:
     
     def test_add_users_empty_list(self, create_database):
         start_users = create_database.get_users()
-        start_num_users = create_database.users_in_db()
+        start_num_users = create_database.db_len()
         
         create_database.add_users([])
         users = create_database.get_users()
-        num_users = create_database.users_in_db()
+        num_users = create_database.db_len()
         
         assert num_users == start_num_users
         assert len(users) == num_users
@@ -116,14 +116,14 @@ class TestUserDB:
             create_database.add_users([('carro23@example.net', '')])
             create_database.add_users([('', 'Carro Carrosdotter')])
         
-        assert create_database.users_in_db() == self.num_users
+        assert create_database.db_len() == self.num_users
     
     def test_del_user(self, create_database):
         id = create_database.find_by_column_name('name', 'Amanda')[0][0]
         create_database.del_user(id)
         
         users = create_database.get_users()
-        num_users = create_database.users_in_db()
+        num_users = create_database.db_len()
         
         assert num_users == self.num_users - 1
         assert len(users) == num_users
@@ -146,4 +146,4 @@ class TestUserDB:
         create_database.clear_table()
         
         assert len(create_database.get_users()) == 0
-        assert create_database.users_in_db() == 0
+        assert create_database.db_len() == 0
