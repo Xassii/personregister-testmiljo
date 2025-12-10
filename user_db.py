@@ -35,7 +35,7 @@ class UserDB:
                             name STRING NOT NULL
                             )""")
         self.__conn.commit()
-        #print(f'Created {table_name} in {db_name}.')
+        #print(f'Opend {table_name} in {db_name}.')
     
     def get_users(self):
         """
@@ -59,7 +59,7 @@ class UserDB:
         for user in users:
             print(f'- ID: {user[0]}, email: {user[1]}, name: {user[2]}')
     
-    def users_in_db(self):
+    def db_len(self):
         """
         Returns how many users are curently saved in database.
         

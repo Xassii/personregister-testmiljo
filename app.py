@@ -19,7 +19,7 @@ def gdpr_validate_test_user_db(user_db, user_table, num_users):
     """
     db = UserDB(user_db, user_table)
     
-    current_users = db.users_in_db()
+    current_users = db.db_len()
     text = f'Found {current_users} in testuser database, expected {num_users}!'
     assert current_users == num_users, text
     
@@ -61,25 +61,25 @@ def create_anon_db(user_db, user_table, anon_db, anon_table):
     anon_db.add_users(anon_users)
 
 
-def determen_and_print_message(users_in_db, num_users):
+def determen_and_print_message(db_len, num_users):
     """
-    Prints diffrent messages depending on how users_in_db
+    Prints diffrent messages depending on how db_len
     and num_users compare.
     
     Parameters
     ----------
-    users_in_db: intiger
+    db_len: intiger
         Users currently in database
     num_users: intiger
         Nummber of users that should be in database
     """
-    if users_in_db > num_users:
+    if db_len > num_users:
         text = '\nToo many users in database. '
         text += 'Clearing and creating new testusers...'
-    elif users_in_db > 0 and users_in_db < num_users:
+    elif db_len > 0 and db_len < num_users:
         text = '\nToo few users in database. '
         text += 'Clearing and creating new testusers...'
-    elif users_in_db == 0:
+    elif db_len == 0:
         text = '\nCreating testusers...'
     else:
         text = '\nTestdatabase have an incorrect value. '
@@ -104,14 +104,14 @@ def create_fake_db(user_db, user_table, num_users):
         How many users that should be in the database
     """
     db = UserDB(user_db, user_table)
-    users_in_db = db.users_in_db()
+    db_len = db.db_len()
     wrong_email = db.find_by_column_name('email', '@example.', invert=True)
     
-    if users_in_db == num_users and not wrong_email:
+    if db_len == num_users and not wrong_email:
         print('\nDatabase allredy have users.')
         return None
     
-    determen_and_print_message(users_in_db, num_users)
+    determen_and_print_message(db_len, num_users)
     db.clear_table()
     fake = BetterFakerSve()
     users = []
@@ -132,8 +132,6 @@ def main():
     """
     num_users = 50
     create_fake_db('data/test_users.db', 'users', num_users)
-    create_anon_db('data/test_users.db', 'users',
-                    'data/test_users.db', 'anonusers')
     
     # Keep the container running for testing
     while True:
