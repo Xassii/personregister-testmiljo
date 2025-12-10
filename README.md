@@ -49,19 +49,24 @@ Classen innehåller metoder för att se hur många och vilka användare finns i 
 En class som använder faker för att skapa användare men har metod för att skapa epost som baseras på användarens namn samt att få ett namn och matchande email tillsammans.
 
 #### app.py
-Ett programm som skapar en databas med fejk användare och anonymmiserar de användarna. Validerar sen att fejkanvändarna är GDPR säkra med jämmna mellanrum.
+Ett programm som skapar en databas med fejk användare. Validerar sen att fejkanvändarna är GDPR säkra med jämmna mellanrum.
+
+Filen har även en funktion för att anonymmisera använare och spara dem i en separat databas.
 
 ### Enhetstester
 Det finns två filer för enhetstest:
 - test_better_faker_sve.py
 - test_user_db.py
 
-De testar funktionaliteten i better_faker_sve.py och user_db.py respektivt.
+De ligger i mappen tests och testar funktionaliteten i better_faker_sve.py och user_db.py respektivt.
 
-För att automatiskt testa koden finns:
+För att automatiskt testa koden när den laddas upp till GitHub finns:
 - build-test.yml
+
+Den kör vid push, pull-request och den 8:e - 13:e december vid midnatt.
 
 ### Docker
 För att säkerställa att programmet kan köras oavsätt dator finns:
 - Dockerfile
 - docker-compose.yml
+
